@@ -42,14 +42,8 @@ RUN wget -qO- "https://cmake.org/files/v3.22/cmake-3.22.0-linux-x86_64.tar.gz" \
 # See https://github.com/lightvector/KataGo/blob/master/Compiling.md.
 
 FROM build-deps as build-raw
-COPY ./engines/KataGo-raw/cpp /engines/KataGo-raw/cpp
-WORKDIR /engines/KataGo-raw/cpp
-RUN cmake . -DUSE_BACKEND=CUDA -DUSE_TCMALLOC=1 -DNO_GIT_REVISION=1
-RUN make clean && make -j
-
-FROM build-deps as build-custom
-COPY ./engines/KataGo-custom/cpp /engines/KataGo-custom/cpp
-WORKDIR /engines/KataGo-custom/cpp
+COPY ./engines/KataGo/cpp /engines/KataGo/cpp
+WORKDIR /engines/KataGo/cpp
 RUN cmake . -DUSE_BACKEND=CUDA -DUSE_TCMALLOC=1 -DNO_GIT_REVISION=1
 RUN make clean && make -j
 
@@ -84,8 +78,7 @@ RUN apt-get update -q \
   && rm -rf /var/lib/apt/lists/*
 
 # Copy over binaries
-COPY --from=build-raw /engines/KataGo-raw/cpp/katago /engines/KataGo-raw/cpp/katago
-COPY --from=build-custom /engines/KataGo-custom/cpp/katago /engines/KataGo-custom/cpp/katago
+COPY --from=build-raw /engines/KataGo/cpp/katago /engines/KataGo/cpp/katago
 
 # Copy over configs
 COPY ./configs /configs

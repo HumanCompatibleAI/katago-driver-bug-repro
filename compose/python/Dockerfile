@@ -49,18 +49,11 @@ COPY ./compose/python/requirements.txt /downloads/requirements.txt
 RUN pip install --no-cache-dir -r /downloads/requirements.txt
 
 # Copy over KataGo python files
-COPY ./engines/KataGo-custom/python /engines/KataGo-custom/python
-COPY ./engines/KataGo-raw/python /engines/KataGo-raw/python
+COPY ./engines/KataGo/python /engines/KataGo/python
 
-# Make /engines/KataGo-* git repos to make scripts run nicely.
+# Make /engines/KataGo git repos to make scripts run nicely.
 # TODO: Make this less hacky...
-WORKDIR /engines/KataGo-raw
-RUN git init . \
-  && git add . \
-  && git config user.name dummy_name \
-  && git config user.email dummy@email.com \
-  && git commit -m "Dummy commit"
-WORKDIR /engines/KataGo-custom
+WORKDIR /engines/KataGo
 RUN git init . \
   && git add . \
   && git config user.name dummy_name \
