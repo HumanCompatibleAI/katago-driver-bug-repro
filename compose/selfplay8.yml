@@ -82,7 +82,8 @@ services:
         $SCRATCH_DIRECTORY \
         $NUM_THREADS \
         $BATCH_SIZE \
-        $USE_GATING &&
+        $USE_GATING \
+        -min-rows 5000 &&
         sleep infinity
       "
     # shuffle_and_export_loop.sh disowns subprocesses and exits, which is why we
