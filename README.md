@@ -1,0 +1,1 @@
+This is repository contains scripts needed to replicate an NVidia driver bug occurring when executing KataGo. See [this forum post](https://forums.developer.nvidia.com/t/kernel-oops-null-pointer-dereference-when-closing-cuda-application-katago/211270/3) for more information.
