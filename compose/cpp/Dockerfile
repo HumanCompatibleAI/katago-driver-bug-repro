@@ -10,6 +10,9 @@ FROM nvidia/cuda:11.1.1-cudnn8-devel-ubuntu20.04 AS build-deps
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Update NVidia signing key
+RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/3bf863cc.pub
+
 # Install apt packages
 RUN apt-get update -q \
   && apt-get install -y \
@@ -51,6 +54,9 @@ RUN make clean && make -j
 FROM nvidia/cuda:11.1.1-cudnn8-runtime-ubuntu20.04 AS prod
 
 ENV DEBIAN_FRONTEND=noninteractive
+
+# Update NVidia signing key
+RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/3bf863cc.pub
 
 # Install useful apt packages
 RUN apt-get update -q \

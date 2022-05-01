@@ -1,31 +1,33 @@
 #!/bin/bash
 
-for i in {0..1000}; do
-	echo "*** Iteration ${i} ***"
+docker-compose --version
+for i in {0..100}; do
+    echo "*** Iteration ${i} ***"
 
-	log_dir=logs/${i}
-	output_dir=selfplay-training/bug-repro.${i}
-	mkdir -p ${log_dir} ${output_dir} 
-	mv selfplay-training/bug-repro selfplay-training/bug-repro.bak >/dev/null 2>&1
-	ln -s bug-repro.${i} selfplay-training/bug-repro
+    output_dir=bug-repro-logs/run-${i}
+    mkdir -p ${output_dir}
+    mv bug-repro-logs/active bug-repro-logs/active.bak >/dev/null 2>&1
+    ln -s run-${i} bug-repro-logs/active
 
-	echo "Starting Docker compose"
-	docker-compose -f compose/selfplay2.yml --env-file compose/selfplay2.env up >${log_dir}/compose.stdout 2>${log_dir}/compose.stderr&
+    echo "Starting Docker compose"
+    docker-compose \
+        -f compose/crash.yml \
+        --env-file compose/crash.env \
+        up \
+        >${output_dir}/compose.stdout \
+        2>${output_dir}/compose.stderr&
 
-	echo "Waiting for at least one model to have been trained"
-	while true; do
-		ls ${output_dir}/train/t0/checkpoint >/dev/null 2>&1
-		if [[ $? -eq 0 ]]; then
-			break
-		fi
-		sleep 5
-	done
+    wait_time=45
+    echo "Waiting for ${wait_time} seconds"
+    for i in $(seq $wait_time)
+    do
+        echo -n .
+        sleep 1
+    done
+    echo -e "\nDone waiting."
 
-	echo "First model checkpoint written. Waiting 1h after this."
-	sleep 3600
-
-	echo "Trying to bring model down now."
-	echo "If this hangs, then bug detected!"
-	docker-compose -f compose/selfplay2.yml --env-file compose/selfplay2.env down
-	wait
+    echo "Trying to bring docker service down now."
+    echo "If this hangs, then bug detected!"
+    docker-compose -f compose/crash.yml --env-file compose/crash.env down
+    wait
 done
