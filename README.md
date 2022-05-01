@@ -5,19 +5,13 @@ We use submodules to contain the appropriate version of KataGo, to clone this re
 git clone --recurse-submodules https://github.com/HumanCompatibleAI/katago-driver-bug-repro.git
 ```
 
-To reproduce the error, run from the repository root on a machine with at least 2 GPUs:
+To reproduce the error, run from the repository root on a machine with at least 7 GPUs:
 ```
-docker-compose -f compose/selfplay2.yml --env-file compose/selfplay2.env up
+bash loop.sh
 ```
 
 You must run this with Docker Compose v1.28.0 or later (older versions do not support GPU reservations).
 
-Wait for it to run. Wait at least long enough for GPU utilization to be high (for about the first 30m, the code just uses CPU, not GPU). Then Ctrl-C the job. Sometimes it will hang, with a kernel OOPS. This seems to be more likely the longer the job has been running.
+This script will repeatedly start Docker containers, wait 45s, and stop them. The bug occurs when the processes terminate, closing the GPU, but only if some work has already performed.
 
-If you have a machine with 8 or more GPUs, you could also run:
-
-``` 
-docker-compose -f compose/selfplay8.yml --env-file compose/selfplay8.env up
-```
-
-Most of our errors have been with servers on 8 GPUs, but we have observed one error on a server with 4 GPUs, so the number of GPUs does not seem critical to reproducing it.
+In our experiments, the error often occurs within a few iterations, and has always ocurred within 10 iterations.
