@@ -13,7 +13,7 @@ for i in {0..100}; do
 
     echo "Starting Docker compose"
     docker-compose \
-        -f compose/crash.yml \
+        -f compose/crash${num_gpus}.yml \
         --env-file compose/crash${num_gpus}.env \
         up \
         >${output_dir}/compose.stdout \
