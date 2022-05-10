@@ -1,5 +1,7 @@
 #!/bin/bash
 
+num_gpus=${1:-7}
+
 docker-compose --version
 for i in {0..100}; do
     echo "*** Iteration ${i} ***"
@@ -12,7 +14,7 @@ for i in {0..100}; do
     echo "Starting Docker compose"
     docker-compose \
         -f compose/crash.yml \
-        --env-file compose/crash.env \
+        --env-file compose/crash${num_gpus}.env \
         up \
         >${output_dir}/compose.stdout \
         2>${output_dir}/compose.stderr&
