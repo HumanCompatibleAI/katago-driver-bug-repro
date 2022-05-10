@@ -30,6 +30,6 @@ for i in {0..100}; do
 
     echo "Trying to bring docker service down now."
     echo "If this hangs, then bug detected!"
-    docker-compose -f compose/crash.yml --env-file compose/crash.env down
+    docker-compose -f compose/crash${num_gpus}.yml --env-file compose/crash${num_gpus}.env down
     wait
 done
