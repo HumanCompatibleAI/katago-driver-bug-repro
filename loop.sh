@@ -1,7 +1,7 @@
 #!/bin/bash
 
 num_gpus=${1:-7}
-wait_time={$2:-60}
+wait_time=${2:-60}
 
 docker-compose --version
 for i in {0..100}; do
