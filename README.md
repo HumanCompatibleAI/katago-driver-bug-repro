@@ -10,10 +10,15 @@ To reproduce the error, run from the repository root on a machine with at least 
 bash loop.sh
 ```
 
-You can also run this on a machine with 3 GPUs. It should still reproduce the problem, but it may take longer:
+This configuration reliably replicates the problem, but you can also run this with a different number of GPUs: we currently support 2, 3, 4 or 8 GPUs. For example: 
+
 ```
-bash loop.sh 3
+bash loop.sh 4
 ```
+
+A different number of GPUs can be supported by adding files `compose/crashN.{yml,env}` and `configs/crashN.cfg` appropriately modified.
+
+To run on a different number of GPUs than {2,3,4,7}, it will be necessary to add a file `compose/crashN.{yml,env}` and `configs/crashN.cfg` -- this can be done by small modifications from the existing files.
 
 You must run this with Docker Compose v1.28.0 or later (older versions do not support GPU reservations). The first time you run this, it may take a while on the first iteration as the images need to be pulled and built.
 
